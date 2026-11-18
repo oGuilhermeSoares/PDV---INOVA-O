@@ -46,10 +46,9 @@ Fluxo confirmado pela Camila Couto, do setor de PDV, em 18/11/2026:
 
 ```mermaid
 flowchart LR
-    A["Associado"] -- "fotos e vídeos pelo WhatsApp" --> E["Equipe de PDV"]
-    E -- "salva na pasta da loja" --> SP[("SharePoint")]
-    E -- "produz relatório e estudo" --> SP
-    E -- "e-mail com o PDF da assessoria e a pasta do estudo" --> A
+    A["Associado"] -- "1. fotos e vídeos<br/>pelo WhatsApp" --> E["Equipe de PDV"]
+    E -- "2. salva as fotos<br/>3. produz relatório e estudo" --> SP[("SharePoint")]
+    E -- "4. e-mail com o PDF da assessoria<br/>e a pasta do estudo" --> A
 ```
 
 1. O associado manda fotos e vídeos da loja pelo **WhatsApp**.
@@ -228,14 +227,20 @@ Regras importantes:
 ## 8. Arquitetura
 
 ```mermaid
-flowchart LR
-    A["Associado<br/>(celular ou computador)"] -- "CNPJ + código" --> P["Portal PDV<br/>(Next.js)"]
-    E["Equipe de PDV"] -- "conta Microsoft" --> P
-    E -- "continua trabalhando" --> SP[("SharePoint<br/>SELL OUT E OPERAÇÕES DE PDV")]
-    P -- "Microsoft Graph<br/>listar, miniaturas, links" --> SP
-    P -- "Microsoft Graph<br/>enviar e-mail" --> M["Caixa de e-mail do setor"]
-    P --> DB[("Banco<br/>cadastros, códigos, registros")]
-    A -. "download e envio direto,<br/>com link liberado pelo portal" .-> SP
+flowchart TB
+    A["Associado<br/>(celular ou computador)"]
+    E["Equipe de PDV"]
+    P["Portal PDV<br/>(Next.js)"]
+    DB[("Banco<br/>cadastros e registros")]
+    SP[("SharePoint<br/>SELL OUT E OPERAÇÕES DE PDV")]
+    M["Caixa de e-mail<br/>do setor"]
+    A -- "CNPJ + código" --> P
+    E -- "conta Microsoft" --> P
+    P --> DB
+    P -- "Graph" --> SP
+    P -- "Graph" --> M
+    A -. "baixa e envia<br/>arquivos direto" .-> SP
+    E -- "continua<br/>trabalhando" --> SP
 ```
 
 | Peça | Para que serve |
