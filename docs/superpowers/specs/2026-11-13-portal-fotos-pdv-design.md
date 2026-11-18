@@ -2,6 +2,12 @@
 
 **Data:** 13/11/2026 · **Autor:** Guilherme Soares (com Claude)
 
+> **Revisão de 18/11/2026.** O retorno da Camila corrigiu duas premissas deste design:
+> 1. Hoje **não** se envia um zip com tudo. Só os relatórios vão por e-mail: o PDF da assessoria e a pasta do estudo de mercado. As fotos e os vídeos chegam do associado pelo WhatsApp.
+> 2. O associado também vai **enviar fotos e vídeos pelo portal**, que os grava na pasta da loja no SharePoint. Por isso "nada é subido pelo portal" deixa de valer, e a permissão no site passa a ser de escrita.
+>
+> A referência atualizada é [docs/documentacao-do-projeto.md](../../documentacao-do-projeto.md). Este arquivo fica como registro do design inicial.
+
 ## Por que existe
 
 O setor de PDV da Farmácias Associadas faz assessoria nas lojas dos associados. Hoje a equipe sobe tudo no SharePoint: fotos de antes e depois, vídeos e estudos BRICK em PDF e XLSX. Isso fica no site **SELL OUT E OPERAÇÕES DE PDV**, em `ASSESSORIA GC / LOJAS ATENDIDAS / <loja>`. Depois a equipe baixa a pasta, zipa e **manda por e-mail** ao associado.
