@@ -24,3 +24,6 @@ Thumbs.db
 
 # artefatos de trabalho do Claude Code
 .superpowers/
+
+# capturas do Playwright MCP
+.playwright-mcp/

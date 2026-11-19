@@ -26,7 +26,7 @@
 
 ## Foco da revisão
 
-1. **Variável obrigatória ausente ou vazia** no `.env`: o app se recusa a subir e mostra em pt-BR *quais* variáveis faltam. Não pode falhar depois, com um erro obscuro. Os testes ficam na Tarefa 2.
+1. **Variável obrigatória ausente ou vazia** no `.env`: o app se recusa a subir e mostra em pt-BR _quais_ variáveis faltam. Não pode falhar depois, com um erro obscuro. Os testes ficam na Tarefa 2.
 2. **`.env.example` diferente do schema**: alguém adiciona uma variável no código e esquece do exemplo, e quem clona o projeto fica sem saber dela. O teste de paridade fica na Tarefa 2.
 3. **Banco fora do ar**: `/api/saude` responde 503 com JSON, em vez de derrubar o processo ou demorar até estourar o tempo. O teste fica na Tarefa 3.
 4. **`next build` sem banco disponível**: o build não pode depender de conexão, porque na hospedagem o build pode rodar sem acesso ao banco. A verificação fica na Tarefa 3, com o build rodando contra uma URL inválida.
@@ -37,10 +37,12 @@
 ### Task 1 — Tarefa 1: Esqueleto do app e ferramentas de qualidade
 
 **Arquivos:**
+
 - Criar: `package.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, `.gitignore`, `.gitattributes`, `vitest.config.ts`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/globals.css` (por ora só `@import "tailwindcss";`)
 - Teste: `src/lib/sanidade.test.ts` (provisório, removido na Tarefa 2)
 
 **Interfaces:**
+
 - Produz os scripts npm `dev`, `build` (`prisma generate && next build`, ligado na Tarefa 3), `start`, `lint`, `typecheck` (`tsc --noEmit`), `test` (`vitest run`), `format` e `format:check`.
 - Produz o alias `@/*` → `./src/*`.
 
@@ -55,11 +57,13 @@
 ### Task 2 — Tarefa 2: Variáveis de ambiente validadas
 
 **Arquivos:**
+
 - Criar: `src/lib/env-schema.ts`, `src/lib/env.ts`, `.env.example`
 - Teste: `src/lib/env-schema.test.ts`
 - Remover: `src/lib/sanidade.test.ts`
 
 **Interfaces:**
+
 - Produz `envSchema` (zod, sem efeito colateral) e `type Env` em `env-schema.ts`.
 - Produz `formatarErrosEnv(issues): string` em `env-schema.ts`, com mensagens em pt-BR.
 - Produz `env: Env` em `env.ts`. Ele valida `process.env` ao ser importado e lança `Error("Configuração de ambiente inválida:\n  - DATABASE_URL: …")`.
@@ -82,18 +86,20 @@
 ### Task 3 — Tarefa 3: Prisma 7, banco local e rota de saúde
 
 **Arquivos:**
+
 - Criar: `prisma/schema.prisma`, `prisma.config.ts`, `src/lib/db.ts`, `src/app/api/saude/route.ts`
 - Teste: `src/app/api/saude/route.test.ts`
 - Modificar: `package.json` (scripts `db:generate`, `db:migrate` = `prisma migrate dev`, `db:deploy` = `prisma migrate deploy`, `db:studio`; `postinstall` = `prisma generate`)
 
 **Interfaces:**
+
 - Consome: `env.DATABASE_URL` (Tarefa 2).
 - Produz: `db: PrismaClient` em `src/lib/db.ts`, com `import "server-only"`, singleton em dev e adapter `PrismaPg`, igual ao Inventário.
 - Produz: `GET /api/saude` → `200 {"status":"ok","banco":"ok"}`, ou `503 {"status":"erro","banco":"indisponível"}` quando a consulta falhar ou passar de 3 s. A rota tem `export const dynamic = "force-dynamic"`. A consulta é `db.$queryRaw\`SELECT 1\``, que funciona em Postgres e em MySQL.
 
 - [ ] **Passo 1:** preparar o banco local, criando a role e o banco no cluster 5433:
-  `psql -h localhost -p 5433 -U postgres -c "CREATE ROLE portal_pdv LOGIN PASSWORD 'portal_pdv' CREATEDB;" -c "CREATE DATABASE portal_pdv OWNER portal_pdv;"`
-  Criar o `.env` local, fora do git, a partir do exemplo, com a porta 5433.
+      `psql -h localhost -p 5433 -U postgres -c "CREATE ROLE portal_pdv LOGIN PASSWORD 'portal_pdv' CREATEDB;" -c "CREATE DATABASE portal_pdv OWNER portal_pdv;"`
+      Criar o `.env` local, fora do git, a partir do exemplo, com a porta 5433.
 - [ ] **Passo 2:** escrever os testes em `route.test.ts`, com `vi.mock("@/lib/db")`:
   - `responde 200 quando o banco responde`: com `$queryRaw` resolvendo → status 200 e o corpo `{status:"ok", banco:"ok"}`.
   - `responde 503 quando o banco falha`: com `$queryRaw` rejeitando → status 503 e `banco: "indisponível"`. O teste também confirma que o corpo não expõe a mensagem do erro.
@@ -108,11 +114,13 @@
 ### Task 4 — Tarefa 4: Identidade visual e página inicial
 
 **Arquivos:**
+
 - Modificar: `src/app/globals.css`, `src/app/layout.tsx`, `src/app/page.tsx`
 - Criar: `public/logo-farmacias-associadas.png` (copiado de `C:\ServiceDesk\solicitacoes\public\`), `src/components/marca/logo.tsx`
 - Teste: `src/lib/cores.test.ts` e `src/lib/cores.ts`
 
 **Interfaces:**
+
 - Produz os tokens do Tailwind (`@theme`), usados como `bg-primary`, `text-primary` e assim por diante. Nunca hex direto nos componentes:
   - `--color-marca: #00b6ad` (teal puro: só fundos decorativos e o logo)
   - `--color-primary` (teal escuro para botões e links; **≥ 4,5:1** sobre branco e com texto branco), `--color-primary-hover` (mais escuro) e `--color-primary-light: #e0faf9`
@@ -135,10 +143,12 @@
 ### Task 5 — Tarefa 5: README, AGENTS.md e PR
 
 **Arquivos:**
+
 - Modificar: `README.md` (acrescentar a seção "Rodar localmente")
 - Criar: `AGENTS.md` e `CLAUDE.md` (este com uma linha: `Leia AGENTS.md.`)
 
 **Interfaces:**
+
 - `AGENTS.md` lista: os gates antes de cada PR (`npm run lint`, `npm run typecheck`, `npm test`, `npm run build`); as regras das restrições globais deste plano (banco portável, `proxy.ts`, tokens de cor, pt-BR, sem emoji, segredos); o fluxo branch → PR com `Closes #N`; onde fica a documentação; e "atualizar a documentação junto com o código".
 
 - [ ] **Passo 1:** escrever a seção "Rodar localmente" do README. Pré-requisitos (Node ≥ 22 e Postgres local), depois `npm install`, `cp .env.example .env` e ajuste de `DATABASE_URL`, criação do banco (o comando SQL da Tarefa 3), `npm run dev`, abrir o app e conferir `/api/saude`. Incluir uma nota sobre o cluster 5433 desta máquina.

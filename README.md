@@ -8,18 +8,18 @@ A equipe do setor **SELL OUT E OPERAÇÕES DE PDV** continua trabalhando no Shar
 
 ## Onde está cada coisa
 
-| | |
-|---|---|
-| Documentação completa do projeto | [docs/documentacao-do-projeto.md](docs/documentacao-do-projeto.md) |
-| Quadro de tarefas | [PDV - INOVAÇÃO](https://github.com/users/oGuilhermeSoares/projects/3) |
-| Design inicial (13/11/2026) | [docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md](docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md) |
+|                                  |                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Documentação completa do projeto | [docs/documentacao-do-projeto.md](docs/documentacao-do-projeto.md)                                                           |
+| Quadro de tarefas                | [PDV - INOVAÇÃO](https://github.com/users/oGuilhermeSoares/projects/3)                                                       |
+| Design inicial (13/11/2026)      | [docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md](docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md) |
 
 ## Em resumo
 
-| Hoje | Com o portal |
-|---|---|
+| Hoje                                                                           | Com o portal                                                              |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
 | O associado manda fotos e vídeos pelo WhatsApp, e a equipe salva no SharePoint | O associado envia pelo portal, e os arquivos caem direto na pasta da loja |
-| A equipe manda o relatório e o estudo de mercado por e-mail | O associado vê tudo no portal, e o e-mail leva só o aviso com o link |
+| A equipe manda o relatório e o estudo de mercado por e-mail                    | O associado vê tudo no portal, e o e-mail leva só o aviso com o link      |
 
 ## Equipe
 

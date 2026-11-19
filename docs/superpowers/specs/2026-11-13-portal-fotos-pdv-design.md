@@ -3,6 +3,7 @@
 **Data:** 13/11/2026 · **Autor:** Guilherme Soares (com Claude)
 
 > **Revisão de 18/11/2026.** O retorno da Camila corrigiu duas premissas deste design:
+>
 > 1. Hoje **não** se envia um zip com tudo. Só os relatórios vão por e-mail: o PDF da assessoria e a pasta do estudo de mercado. As fotos e os vídeos chegam do associado pelo WhatsApp.
 > 2. O associado também vai **enviar fotos e vídeos pelo portal**, que os grava na pasta da loja no SharePoint. Por isso "nada é subido pelo portal" deixa de valer, e a permissão no site passa a ser de escrita.
 >
@@ -34,17 +35,17 @@ O portal tira o zip do e-mail. O associado passa a ter um lugar fixo para ver o 
 
 ## Abordagens consideradas
 
-| Abordagem | Como funciona | Troca | Decisão |
-|---|---|---|---|
+| Abordagem                       | Como funciona                                                                             | Troca                                                                                             | Decisão       |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | **A. Ler direto do SharePoint** | O portal lê as pastas pelo Microsoft Graph. O admin só liga a pasta da loja ao associado. | Rotina da equipe intacta e vídeos no espaço do M365. Exige um app no Entra com permissão no site. | **Escolhida** |
-| B. Upload no portal | O admin sobe os arquivos no Supabase Storage. | Mais simples de construir, mas há dois lugares para manter e os vídeos estouram o plano gratuito. | Descartada |
+| B. Upload no portal             | O admin sobe os arquivos no Supabase Storage.                                             | Mais simples de construir, mas há dois lugares para manter e os vídeos estouram o plano gratuito. | Descartada    |
 
 Login do associado:
 
-| Opção | Troca | Decisão |
-|---|---|---|
-| Só CNPJ | Zero atrito, mas o CNPJ é público e qualquer pessoa entraria. | Descartada |
-| CNPJ + senha | Seguro, mas cria o "suporte de senha". | Descartada |
+| Opção                                     | Troca                                                                     | Decisão       |
+| ----------------------------------------- | ------------------------------------------------------------------------- | ------------- |
+| Só CNPJ                                   | Zero atrito, mas o CNPJ é público e qualquer pessoa entraria.             | Descartada    |
+| CNPJ + senha                              | Seguro, mas cria o "suporte de senha".                                    | Descartada    |
 | **CNPJ + código de 6 dígitos por e-mail** | O associado digita só o CNPJ. Entra quem tem acesso ao e-mail cadastrado. | **Escolhida** |
 
 ## Decisões do Guilherme
@@ -111,11 +112,11 @@ Teal `#00b6ad` e laranja `#f97316`, logo da Farmácias Associadas e tokens no `@
 
 **Em aberto. A decisão é do William.** Como os arquivos ficam no SharePoint, o portal só precisa de um servidor Node.js e de um banco pequeno. Não precisa de armazenamento de arquivos. As opções em vista:
 
-| Opção | Banco | Observação |
-|---|---|---|
-| Hostinger, "Node.js Web Apps" (plano Business ou maior) | MySQL gerenciado | Roda o Next.js em modo servidor. O app dorme quando fica parado, e o primeiro acesso depois disso é mais lento. |
-| Hostinger VPS | Postgres instalado na VPS | Controle total, mas a manutenção do servidor fica com a equipe. |
-| Vercel + Supabase | Postgres | O caminho do FarmaDesk e do Inventário. |
+| Opção                                                   | Banco                     | Observação                                                                                                      |
+| ------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Hostinger, "Node.js Web Apps" (plano Business ou maior) | MySQL gerenciado          | Roda o Next.js em modo servidor. O app dorme quando fica parado, e o primeiro acesso depois disso é mais lento. |
+| Hostinger VPS                                           | Postgres instalado na VPS | Controle total, mas a manutenção do servidor fica com a equipe.                                                 |
+| Vercel + Supabase                                       | Postgres                  | O caminho do FarmaDesk e do Inventário.                                                                         |
 
 Como o Prisma troca de provedor com uma linha enquanto ainda não há migrations em produção, o desenvolvimento pode começar antes da decisão. Para o domínio, a sugestão é seguir o padrão `*.redeassociadas.com.br`.
 
