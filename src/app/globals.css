@@ -1,31 +1,306 @@
 @import "tailwindcss";
 
 /*
- * Tokens de cor do Portal PDV. Os valores vêm de src/lib/cores.ts, e um teste
- * confere que são os mesmos. Use sempre os nomes (bg-primary, text-texto-suave),
- * nunca hex direto nos componentes.
+ * Tokens do Portal PDV. O guia completo está em docs/design-system/README.md.
  *
- * marca e accent são as cores puras da Farmácias Associadas: só para fundos
- * decorativos e logo. Texto e botões usam primary e accent-dark (WCAG AA).
+ * Os hex vêm de src/lib/cores.ts, e um teste confere que são os mesmos. Nos
+ * componentes, use sempre as classes (bg-primary, text-gray-600,
+ * bg-petroleo-900), nunca hex direto.
+ *
+ * A paleta e os tamanhos de texto padrão do Tailwind são zerados: só existem
+ * as cores e a escala do design system. Uma classe fora dele (bg-blue-500,
+ * text-sm) não gera estilo nenhum.
  */
 @theme {
-  --color-marca: #00b6ad;
-  --color-primary: #007b75;
-  --color-primary-hover: #006560;
-  --color-primary-light: #e0faf9;
-  --color-accent: #f97316;
-  --color-accent-dark: #c2410c;
-  --color-accent-light: #fff7ed;
-  --color-fundo: #fafaf9;
-  --color-superficie: #ffffff;
-  --color-texto: #1f2937;
-  --color-texto-suave: #4b5563;
-  --color-borda: #e7e5e4;
+  --color-*: initial;
+  --text-*: initial;
 
-  --font-sans: var(--font-portal), ui-sans-serif, system-ui, sans-serif;
+  --color-white: #ffffff;
+
+  /* Tinta e balcão. gray-600 é o cinza mínimo para texto em qualquer fundo
+     claro; gray-500 só sobre branco ou gray-50; gray-400 nunca é texto. */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5dc;
+  --color-gray-400: #99a1af;
+  --color-gray-500: #6a7282;
+  --color-gray-600: #4a5565;
+  --color-gray-700: #364153;
+  --color-gray-900: #101828;
+  --color-gray-950: #030712;
+
+  --color-red-50: #fef2f2;
+  --color-red-700: #c10007;
+  --color-red-800: #9f0712;
+
+  /* Teal da marca: primary só preenche (texto em gray-950); primary-strong é
+     o teal de leitura (links, foco no claro). */
+  --color-primary: #00b6ad;
+  --color-primary-dark: #009991;
+  --color-primary-light: #e0faf9;
+  --color-primary-strong: #00706a;
+
+  /* Laranja da cruz: logo e item novo. Texto laranja usa accent-strong. */
+  --color-accent: #f97316;
+  --color-accent-light: #fff7ed;
+  --color-accent-strong: #a84300;
+
+  /* Status: texto sobre o fundo do mesmo nome, todos acima de 4,5:1. */
+  --color-status-aberto: #8a4a00;
+  --color-status-aberto-bg: #fff3e0;
+  --color-status-andamento: #00596b;
+  --color-status-andamento-bg: #e3f4f8;
+  --color-status-aguardando: #5b3fa0;
+  --color-status-aguardando-bg: #f0ebfa;
+  --color-status-resolvido: #1f6b3a;
+  --color-status-resolvido-bg: #e6f4ea;
+  --color-status-recusado: #a3271f;
+  --color-status-recusado-bg: #fdecea;
+
+  /* Painéis escuros da marca e a palavra de destaque sobre eles. */
+  --color-petroleo-950: #0a2427;
+  --color-petroleo-900: #0f3034;
+  --color-petroleo-800: #163f44;
+  --color-petroleo-700: #21535a;
+  --color-realce: #fdba74;
+
+  /* Iniciais do Avatar: cada tom com o seu fundo, acima de 4,5:1. */
+  --color-avatar-1: #245c5a;
+  --color-avatar-1-bg: #dcefed;
+  --color-avatar-2: #855126;
+  --color-avatar-2-bg: #f4e6d7;
+  --color-avatar-3: #395d74;
+  --color-avatar-3-bg: #e2edf4;
+  --color-avatar-4: #895361;
+  --color-avatar-4-bg: #f4e6e9;
+
+  /* Escala tipográfica. 14 px é o menor texto da interface, e os campos
+     usam 16 px (menos que isso faz o iPhone dar zoom ao tocar). */
+  --text-apoio: 0.875rem;
+  --text-apoio--line-height: 1.45;
+  --text-corpo: 1rem;
+  --text-corpo--line-height: 1.5;
+  --text-destaque: 1.125rem;
+  --text-destaque--line-height: 1.4;
+  --text-secao: 1.5rem;
+  --text-secao--line-height: 1.25;
+  --text-pagina: 2rem;
+  --text-pagina--line-height: 1.15;
+  --text-vitrine: 2.75rem;
+  --text-vitrine--line-height: 1.08;
+  --text-senha: 2rem;
+  --text-senha--line-height: 1.1;
+
+  /* Superfícies (cartão, diálogo). */
+  --radius-2xl: 1.25rem;
+
+  /* Sombra suave tingida de petróleo: só no que flutua. */
+  --shadow-flutuante:
+    0 5px 10px 0 rgb(15 48 52 / 0.08), 0 18px 18px 0 rgb(15 48 52 / 0.07),
+    0 42px 25px 0 rgb(15 48 52 / 0.04);
+
+  /* Entrada dos blocos: sobe 12 px e aparece. */
+  --animate-entrar: entrar 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
 }
 
-body {
-  background-color: var(--color-fundo);
-  color: var(--color-texto);
+/* As variáveis vêm do next/font, no <html> (src/app/layout.tsx). */
+@theme inline {
+  --font-sans:
+    var(--font-atkinson), system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-titulo:
+    var(--font-barlow), var(--font-atkinson), system-ui, sans-serif;
+}
+
+/* Em @layer base, para as classes do Tailwind poderem trocar estes valores. */
+@layer base {
+  /* Os atalhos da barra fixa rolam suave e param com o título abaixo dela. */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-900);
+  }
+
+  /*
+   * Com o visualizador de fotos aberto, a página atrás não rola. Só nele, que
+   * cobre a tela: num diálogo pequeno, a barra de rolagem sumiria e a página
+   * pularia para o lado.
+   */
+  html:has(dialog[data-tela-cheia]:modal) {
+    overflow: hidden;
+  }
+
+  button,
+  [role="button"],
+  a,
+  label[for],
+  select,
+  summary {
+    cursor: pointer;
+  }
+
+  input,
+  textarea {
+    cursor: text;
+  }
+
+  /*
+   * Um anel de foco só, igual em link, botão e campo. A cor fica definida
+   * também fora do foco: as classes transition e transition-colors animam a
+   * cor do contorno, e sem isso o anel nasceria na cor do texto.
+   */
+  :where(a, button, input, select, textarea, summary, [tabindex]) {
+    outline-color: var(--color-primary-strong);
+  }
+
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* No painel escuro, o anel usa o teal da marca (5,6:1 sobre o petróleo). */
+  .superficie-escura
+    :where(a, button, input, select, textarea, summary, [tabindex]) {
+    outline-color: var(--color-primary);
+  }
+
+  /* Grade de pontos discreta do painel escuro. */
+  .grade-de-pontos {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-white) 6%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  /* LinkPendingHint: reserva o espaço e só aparece se a navegação demorar. */
+  .link-hint {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-primary-strong);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .link-hint.is-pending {
+    visibility: visible;
+    animation:
+      link-hint-in 200ms ease 100ms forwards,
+      link-hint-pulse 1s ease-in-out 300ms infinite;
+  }
+}
+
+@keyframes link-hint-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes link-hint-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/*
+ * Movimento ligado à rolagem, como no clinia. Sem suporte a
+ * animation-timeline, ou para quem pede menos movimento, as classes não mudam
+ * nada: tudo aparece parado e visível.
+ *
+ * - revelar: o bloco sobe 24 px e aparece ao entrar na tela.
+ * - subir-ao-rolar: a prévia da tela da loja sobe e cresce até o lugar.
+ * - desenhar-ao-rolar: a linha do "Como funciona" se desenha (o path precisa
+ *   de pathLength="1"), seguindo a rolagem da .linha-do-tempo.
+ */
+.desenhar-ao-rolar {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.linha-do-tempo {
+  view-timeline: --passos block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .revelar {
+      animation: revelar linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    .subir-ao-rolar {
+      animation: subir linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+
+    .desenhar-ao-rolar {
+      animation: desenhar linear both;
+      animation-timeline: --passos;
+      /* Termina pouco depois de os passos ficarem inteiros na tela. */
+      animation-range: entry 10% contain 25%;
+    }
+  }
+}
+
+@keyframes revelar {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* Só posição e tamanho: com opacidade, a prévia ficaria cinza sobre o hero. */
+@keyframes subir {
+  from {
+    transform: translateY(64px) scale(0.96);
+  }
+}
+
+@keyframes desenhar {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Quem pede menos movimento não vê animação nem transição. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

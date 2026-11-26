@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
     // Cliente Prisma gerado por `prisma generate` — nunca é lintado.
     "src/generated/**",
     ".superpowers/**",
+    // Skills e plugins do Claude Code instalados no projeto: ferramenta, não
+    // código do portal.
+    ".claude/**",
   ]),
   {
     rules: {
