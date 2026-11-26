@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de cor do Portal PDV. Os valores vêm de src/lib/cores.ts, e um teste
+ * confere que são os mesmos. Use sempre os nomes (bg-primary, text-texto-suave),
+ * nunca hex direto nos componentes.
+ *
+ * marca e accent são as cores puras da Farmácias Associadas: só para fundos
+ * decorativos e logo. Texto e botões usam primary e accent-dark (WCAG AA).
+ */
+@theme {
+  --color-marca: #00b6ad;
+  --color-primary: #007b75;
+  --color-primary-hover: #006560;
+  --color-primary-light: #e0faf9;
+  --color-accent: #f97316;
+  --color-accent-dark: #c2410c;
+  --color-accent-light: #fff7ed;
+  --color-fundo: #fafaf9;
+  --color-superficie: #ffffff;
+  --color-texto: #1f2937;
+  --color-texto-suave: #4b5563;
+  --color-borda: #e7e5e4;
+
+  --font-sans: var(--font-portal), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-fundo);
+  color: var(--color-texto);
+}

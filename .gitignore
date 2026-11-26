@@ -1,0 +1,29 @@
+# dependências
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# cliente Prisma gerado (prisma generate)
+src/generated/
+
+# variáveis de ambiente — só o exemplo vai para o git
+.env
+.env.*
+!.env.example
+
+# TypeScript
+*.tsbuildinfo
+
+# logs e sistema
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# artefatos de trabalho do Claude Code
+.superpowers/
+
+# capturas do Playwright MCP
+.playwright-mcp/

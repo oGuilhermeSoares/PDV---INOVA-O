@@ -4,22 +4,22 @@ Site para o associado acompanhar a assessoria de PDV da sua loja. No portal ele 
 
 A equipe do setor **SELL OUT E OPERAÇÕES DE PDV** continua trabalhando no SharePoint como hoje. O portal mostra ao associado as pastas da loja dele e grava nelas o que ele envia.
 
-**Situação:** em planejamento. O desenvolvimento começa pelo card [#1](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/1).
+**Situação:** em desenvolvimento. A base do projeto está pronta (card [#1](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/1)), e as telas chegam nos próximos cards.
 
 ## Onde está cada coisa
 
-| | |
-|---|---|
-| Documentação completa do projeto | [docs/documentacao-do-projeto.md](docs/documentacao-do-projeto.md) |
-| Quadro de tarefas | [PDV - INOVAÇÃO](https://github.com/users/oGuilhermeSoares/projects/3) |
-| Design inicial (13/11/2026) | [docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md](docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md) |
+|                                  |                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Documentação completa do projeto | [docs/documentacao-do-projeto.md](docs/documentacao-do-projeto.md)                                                           |
+| Quadro de tarefas                | [PDV - INOVAÇÃO](https://github.com/users/oGuilhermeSoares/projects/3)                                                       |
+| Design inicial (13/11/2026)      | [docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md](docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md) |
 
 ## Em resumo
 
-| Hoje | Com o portal |
-|---|---|
+| Hoje                                                                           | Com o portal                                                              |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
 | O associado manda fotos e vídeos pelo WhatsApp, e a equipe salva no SharePoint | O associado envia pelo portal, e os arquivos caem direto na pasta da loja |
-| A equipe manda o relatório e o estudo de mercado por e-mail | O associado vê tudo no portal, e o e-mail leva só o aviso com o link |
+| A equipe manda o relatório e o estudo de mercado por e-mail                    | O associado vê tudo no portal, e o e-mail leva só o aviso com o link      |
 
 ## Equipe
 
@@ -36,4 +36,60 @@ Next.js 16, React 19, Prisma 7, Auth.js v5 (Microsoft Entra ID), Tailwind v4 e M
 2. Crie uma branch a partir da `main`.
 3. Abra um PR citando o card (`Closes #N`). O card vai para **Em revisão** e, depois do merge, para **Concluído**.
 
-As instruções para rodar o projeto localmente entram neste README junto com o card #1.
+Antes de abrir o PR, rode os quatro gates (veja o [AGENTS.md](AGENTS.md)).
+
+## Rodar localmente
+
+### Pré-requisitos
+
+- **Node.js 22 ou mais novo**
+- **PostgreSQL** rodando na máquina. O banco de produção ainda vai ser decidido no card #2. Enquanto isso, o desenvolvimento usa Postgres.
+
+### Passo a passo
+
+1. Instale as dependências. O `prisma generate` roda sozinho no fim:
+
+   ```bash
+   npm install
+   ```
+
+2. Crie o usuário e o banco do portal no Postgres local, como superusuário:
+
+   ```bash
+   psql -h localhost -U postgres -c "CREATE ROLE portal_pdv LOGIN PASSWORD 'portal_pdv' CREATEDB;" -c "CREATE DATABASE portal_pdv OWNER portal_pdv;"
+   ```
+
+   O `CREATEDB` é necessário, porque o `prisma migrate dev` cria um banco temporário para comparar as migrations.
+
+3. Copie o arquivo de variáveis e ajuste a `DATABASE_URL`, se o seu Postgres não estiver na porta 5432:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Por enquanto só `DATABASE_URL`, `APP_URL` e `NODE_ENV` são obrigatórias. As outras ficam vazias até o card que as usa. Se faltar alguma obrigatória, o portal não sobe e avisa qual é.
+
+4. Suba o portal:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Abra o endereço que aparecer no terminal, normalmente <http://localhost:3000>. Para conferir o banco, abra `/api/saude`. A resposta deve ser `{"status":"ok","banco":"ok"}`.
+
+### Comandos
+
+| Comando              | Para que serve                                           |
+| -------------------- | -------------------------------------------------------- |
+| `npm run dev`        | Sobe o portal em modo desenvolvimento                    |
+| `npm test`           | Roda os testes                                           |
+| `npm run lint`       | Confere o código com o ESLint                            |
+| `npm run typecheck`  | Confere os tipos do TypeScript                           |
+| `npm run build`      | Gera o cliente Prisma e o build de produção              |
+| `npm run format`     | Formata o código com o Prettier                          |
+| `npm run db:migrate` | Cria e aplica migrations no banco local (a partir do #5) |
+| `npm run db:studio`  | Abre o Prisma Studio para olhar o banco                  |
+
+### Na máquina do Guilherme
+
+O Postgres de desenvolvimento roda num cluster próprio na **porta 5433**, sem Docker. É o mesmo do Inventário. A `DATABASE_URL` do `.env` dele aponta para `localhost:5433/portal_pdv`.

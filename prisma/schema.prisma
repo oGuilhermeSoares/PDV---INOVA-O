@@ -1,0 +1,15 @@
+// Portal PDV — os modelos entram no card #5 (associados, lojas, pastas, códigos…).
+//
+// O banco de produção ainda não foi escolhido (card #2: Postgres ou MySQL).
+// Mantenha o schema portável: nada de String[], extensões ou @db.* exclusivos
+// de um banco. Se a decisão for MySQL, troque o provider abaixo antes da
+// primeira migration.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
