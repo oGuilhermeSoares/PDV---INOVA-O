@@ -13,6 +13,7 @@ A equipe do setor **SELL OUT E OPERAÇÕES DE PDV** continua trabalhando no Shar
 | Documentação completa do projeto | [docs/documentacao-do-projeto.md](docs/documentacao-do-projeto.md)                                                           |
 | Quadro de tarefas                | [PDV - INOVAÇÃO](https://github.com/users/oGuilhermeSoares/projects/3)                                                       |
 | Design inicial (13/11/2026)      | [docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md](docs/superpowers/specs/2026-11-13-portal-fotos-pdv-design.md) |
+| Design system                    | [docs/design-system/README.md](docs/design-system/README.md)                                                                 |
 
 ## Em resumo
 
@@ -29,6 +30,16 @@ A equipe do setor **SELL OUT E OPERAÇÕES DE PDV** continua trabalhando no Shar
 ## Tecnologia
 
 Next.js 16, React 19, Prisma 7, Auth.js v5 (Microsoft Entra ID), Tailwind v4 e Microsoft Graph, para o SharePoint e os e-mails. A hospedagem ainda está em decisão no card [#2](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/2).
+
+## Design system
+
+As telas seguem o [guia do design system](docs/design-system/README.md): a marca da Farmácias Associadas, painéis petróleo e títulos em Barlow, com o texto em Atkinson Hyperlegible Next. Os componentes ficam em `src/components/ui`.
+
+A entrada do associado (`/entrar`) é uma página de apresentação, no estilo do [clinia.io](https://clinia.io/). O login fica no primeiro bloco; abaixo vêm a prévia da tela da loja, o que tem no portal, como funciona e as perguntas frequentes.
+
+Depois de entrar, o associado vê a tela da loja (`src/components/loja`): os relatórios, o estudo de mercado e as fotos e vídeos de antes e depois. Ela é tela de trabalho e segue o design system do portal; o estilo do clinia fica só na entrada.
+
+Para ver as telas de entrada e a tela da loja em cada estado, e o catálogo de componentes, rode `npm run dev` e abra `/previa`. A prévia só existe no ambiente de desenvolvimento.
 
 ## Como trabalhar neste repositório
 

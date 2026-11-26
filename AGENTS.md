@@ -40,11 +40,17 @@ Formate só os arquivos que você mudou, com `npx prettier --write <arquivos>`.
 - **Prisma 7:** o generator é `prisma-client`, com saída em `src/generated/prisma`, e a conexão fica em `prisma.config.ts`. O app acessa o banco só por `src/lib/db.ts`.
 - **Variáveis de ambiente:** toda variável nova entra em `src/lib/env-schema.ts` **e** no `.env.example`. Um teste quebra se os dois se desencontrarem. Acesse as variáveis por `env`, de `@/lib/env`, nunca por `process.env` direto.
 - **Middleware:** use `src/proxy.ts`, não `middleware.ts`. O Next 16 renomeou o arquivo.
-- **Cores:** use os tokens do Tailwind (`bg-primary`, `text-texto-suave`…), nunca hex direto nos componentes. Os valores ficam em `src/lib/cores.ts` e no `globals.css`, e um teste confere que são os mesmos. O teal (`marca`) e o laranja (`accent`) puros não passam no contraste para texto: use `primary` e `accent-dark`, e mantenha o teste de contraste verde para qualquer cor nova.
+- **Cores:** use os tokens do Tailwind (`bg-primary`, `text-gray-600`, `bg-petroleo-900`…), nunca hex direto nos componentes. Os valores ficam em `src/lib/cores.ts` e no `globals.css`, e um teste confere que os dois têm as mesmas cores. O teal `primary` é só preenchimento, com o texto sobre ele em `gray-950`; o texto teal é `primary-strong`. O laranja `accent` nunca é texto sobre fundo claro; o texto laranja é `accent-strong`. Mantenha o teste de contraste verde para qualquer cor nova.
 - **Ícones:** use `lucide-react`. Nada de emoji no lugar de ícone.
 - **Acessibilidade:** um elemento clicável é `button` ou `a`, nunca `div` ou `span` com `onClick`. O lint bloqueia isso.
 - **Segredos:** nunca vão para o git. O `.env` fica no gitignore.
 - **SharePoint e Graph:** todo acesso fica no servidor (`import "server-only"`). Nenhum token ou link do Graph vai para o navegador sem passar pela checagem de permissão do portal (cards #4 e #12).
+
+## Interface
+
+- Siga o [guia do design system](docs/design-system/README.md): cores, tipografia, tom, ícones e movimento.
+- Use os componentes de `src/components/ui` antes de escrever classes à mão. O guia de cada um fica em `docs/design-system/componentes/`.
+- Veja as telas e os componentes em `/previa`, com `npm run dev`. A prévia só existe no ambiente de desenvolvimento.
 
 ## Pegadinhas conhecidas
 

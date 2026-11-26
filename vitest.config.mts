@@ -4,6 +4,7 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    // .tsx: testes de componente, que conferem o HTML gerado no servidor.
+    include: ["src/**/*.test.{ts,tsx}"],
   },
 });

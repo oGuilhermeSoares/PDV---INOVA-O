@@ -351,15 +351,15 @@ Os e-mails usam a identidade visual da Farmácias Associadas e sempre têm uma v
 
 É a mesma base dos outros sistemas internos (FarmaDesk e Inventário). Assim a equipe reaproveita o que já sabe e o que já está pronto.
 
-| Item               | Escolha                                                                 |
-| ------------------ | ----------------------------------------------------------------------- |
-| Aplicação          | Next.js 16 (App Router, `proxy.ts`), React 19, TypeScript               |
-| Banco              | Prisma 7, com Postgres ou MySQL conforme a hospedagem                   |
-| Login da equipe    | Auth.js v5 com Microsoft Entra ID                                       |
-| Login do associado | CNPJ + código por e-mail, implementado no próprio portal                |
-| Arquivos e e-mail  | Microsoft Graph, com o app "Portal PDV" no Entra                        |
-| Visual             | Tailwind v4, com os tokens da marca: teal `#00b6ad` e laranja `#f97316` |
-| Validação          | zod                                                                     |
+| Item               | Escolha                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Aplicação          | Next.js 16 (App Router, `proxy.ts`), React 19, TypeScript                                                                                                    |
+| Banco              | Prisma 7, com Postgres ou MySQL conforme a hospedagem                                                                                                        |
+| Login da equipe    | Auth.js v5 com Microsoft Entra ID                                                                                                                            |
+| Login do associado | CNPJ + código por e-mail, implementado no próprio portal                                                                                                     |
+| Arquivos e e-mail  | Microsoft Graph, com o app "Portal PDV" no Entra                                                                                                             |
+| Visual             | Tailwind v4 e o [design system do portal](design-system/README.md): teal `#00b6ad`, laranja `#f97316`, painéis petróleo, Atkinson Hyperlegible Next e Barlow |
+| Validação          | zod                                                                                                                                                          |
 
 A identidade visual segue a da Farmácias Associadas: cores, logo e nada de emoji no lugar de ícone.
 
