@@ -11,6 +11,8 @@ export type ArquivoDaLoja = {
   atualizadoEm: string;
   /** Rota protegida do arquivo (card #12). Sem ela, a tela mostra o bloco. */
   url?: string;
+  /** Tamanho em bytes, quando o Graph informa. Serve ao limite do zip (#17). */
+  tamanho?: number;
 };
 
 /** Uma pasta da loja no SharePoint. `nome` vazio é a raiz da pasta da loja. */
@@ -22,6 +24,8 @@ export type SecaoDaLoja = {
   tipo: "documentos" | "fotos";
   /** O que dizer quando a seção não tem arquivos. */
   vazia: string;
+  /** Nome curto da pasta dentro do .zip (card #17). Sem ele, vale o título. */
+  nomeNoZip?: string;
   arquivos: ArquivoDaLoja[];
 };
 
@@ -31,6 +35,7 @@ const CONHECIDAS: Record<string, Regra> = {
   "": {
     id: "relatorios",
     titulo: "Relatórios",
+    nomeNoZip: "Relatórios",
     tipo: "documentos",
     vazia: "O relatório da assessoria aparece aqui depois da visita da equipe.",
     ordem: 0,
@@ -38,6 +43,7 @@ const CONHECIDAS: Record<string, Regra> = {
   estudos: {
     id: "estudo",
     titulo: "Estudo de mercado",
+    nomeNoZip: "Estudo de mercado",
     tipo: "documentos",
     vazia: "Os estudos de mercado da sua loja aparecem aqui.",
     ordem: 1,
@@ -45,6 +51,7 @@ const CONHECIDAS: Record<string, Regra> = {
   "fotos antes": {
     id: "antes",
     titulo: "Fotos e vídeos: antes",
+    nomeNoZip: "Fotos antes",
     tipo: "fotos",
     vazia: "As fotos e os vídeos de antes da assessoria aparecem aqui.",
     ordem: 2,
@@ -52,6 +59,7 @@ const CONHECIDAS: Record<string, Regra> = {
   "fotos depois": {
     id: "depois",
     titulo: "Fotos e vídeos: depois",
+    nomeNoZip: "Fotos depois",
     tipo: "fotos",
     vazia: "As fotos e os vídeos de depois da assessoria aparecem aqui.",
     ordem: 3,
@@ -60,6 +68,25 @@ const CONHECIDAS: Record<string, Regra> = {
 
 // Rascunhos da equipe (proposta da documentação, seção 7): nunca aparecem.
 const ESCONDIDAS = new Set(["interno"]);
+
+/** Os ids das seções que sempre existem, para validar o que vem na URL. */
+export const IDS_DAS_SECOES_CONHECIDAS: readonly string[] = Object.values(
+  CONHECIDAS,
+).map((regra) => regra.id);
+
+/**
+ * O id de seção tem um formato aceitável? É só o formato: se a seção existe
+ * ou não, quem decide é a busca em `montarSecoes`. "interno" passa de
+ * propósito, para a pasta escondida dar 404 e não 400.
+ */
+export function formatoDeIdDeSecaoValido(id: string): boolean {
+  return (
+    id.length <= 300 &&
+    (IDS_DAS_SECOES_CONHECIDAS.includes(id) ||
+      ESCONDIDAS.has(id) ||
+      /^pasta-[a-z0-9-]+$/.test(id))
+  );
+}
 
 /** Sem maiúsculas, acentos nem espaços nas pontas: "Fotos Depois" = "fotos depois". */
 function chave(nome: string): string {
@@ -80,6 +107,7 @@ export function montarSecoes(pastas: PastaDaLoja[]): SecaoDaLoja[] {
     const regra: Regra = CONHECIDAS[k] ?? {
       id: `pasta-${k.replace(/[^a-z0-9]+/g, "-")}`,
       titulo: pasta.nome.trim(),
+      nomeNoZip: pasta.nome.trim(),
       tipo: "documentos",
       vazia: "Esta pasta ainda está vazia.",
       ordem: 10,
@@ -93,9 +121,10 @@ export function montarSecoes(pastas: PastaDaLoja[]): SecaoDaLoja[] {
     .sort(
       (a, b) => a.ordem - b.ordem || a.titulo.localeCompare(b.titulo, "pt-BR"),
     )
-    .map(({ id, titulo, tipo, vazia, arquivos }) => ({
+    .map(({ id, titulo, nomeNoZip, tipo, vazia, arquivos }) => ({
       id,
       titulo,
+      nomeNoZip,
       tipo,
       vazia,
       arquivos,
