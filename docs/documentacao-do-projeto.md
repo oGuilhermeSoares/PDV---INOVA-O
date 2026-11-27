@@ -165,6 +165,8 @@ Esboço da tela no celular:
 4. Os arquivos entram na pasta da loja no SharePoint. Se já existir um arquivo com o mesmo nome, o novo é renomeado e nada é sobrescrito.
 5. A equipe recebe um aviso único para o envio inteiro, por exemplo: "Drogaria Jumalti enviou 12 fotos e 1 vídeo".
 
+A tela já está desenhada, com o envio simulado, em `/previa/envio` (guia em [docs/design-system/componentes/TelaDeEnvio.md](design-system/componentes/TelaDeEnvio.md)). O envio de verdade para o SharePoint é a segunda parte do card #20.
+
 ### 6.4 A equipe publica um relatório e avisa o associado
 
 1. A equipe salva o relatório ou o estudo na pasta da loja no SharePoint, como já faz hoje.

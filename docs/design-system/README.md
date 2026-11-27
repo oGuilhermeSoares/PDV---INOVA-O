@@ -150,6 +150,7 @@ Cada guia diz quando usar o componente e o que passar a ele.
 - **Marca e entrada:** [Logo](componentes/Logo.md), [BarraDoPortal](componentes/BarraDoPortal.md), [MolduraDeEntrada](componentes/MolduraDeEntrada.md), [SeloComVisto](componentes/SeloComVisto.md), [ReenvioDeCodigo](componentes/ReenvioDeCodigo.md), [Telas](componentes/Telas.md), [FormularioCnpj](componentes/FormularioCnpj.md), [FormularioCodigo](componentes/FormularioCodigo.md) e [EntradaDaEquipe](componentes/EntradaDaEquipe.md).
 - **Página do associado:** [PreviaDaLoja](componentes/PreviaDaLoja.md) e as [seções da página](componentes/SecoesDaPagina.md): "O que você encontra", "Como funciona", as perguntas frequentes, a chamada final, o rodapé, as miniaturas e a decoração.
 - **Tela da loja:** [TelaDaLoja](componentes/TelaDaLoja.md), com a barra, o seletor de loja, as seções, a linha de arquivo, a grade de fotos e o visualizador.
+- **Envio de fotos e vídeos:** [TelaDeEnvio](componentes/TelaDeEnvio.md), com os dois passos, a linha de cada arquivo, a barra de progresso, o cartão de sucesso e a confirmação de saída no meio do envio.
 
 ## De onde veio
 

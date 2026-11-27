@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { Upload } from "lucide-react";
+
 import { Aviso } from "@/components/ui/Aviso";
+import { buttonStyles } from "@/components/ui/Button";
 import { nomeDaLoja, type SecaoDaLoja as Secao } from "@/lib/loja";
 
 import { BarraDaLoja } from "./BarraDaLoja";
-import { BotaoEnviar, BotaoTentarDeNovo } from "./BotoesDaLoja";
+import { BotaoTentarDeNovo } from "./BotoesDaLoja";
 import { GradeDeFotos } from "./GradeDeFotos";
 import { SecaoDaLoja } from "./SecaoDaLoja";
 import { SeletorDeLoja, type OpcaoDeLoja } from "./SeletorDeLoja";
@@ -10,19 +14,21 @@ import { SeletorDeLoja, type OpcaoDeLoja } from "./SeletorDeLoja";
 /**
  * O que o associado vê depois de entrar: o nome da loja numa faixa petróleo
  * lisa (é tela de trabalho: sem a decoração dos painéis da marca), a troca de
- * loja (com duas ou mais), o botão de enviar e as seções na ordem da
- * documentação. Com `erro` (SharePoint fora do ar), um aviso e "Tentar de
- * novo" no lugar das seções.
+ * loja (com duas ou mais), o link para a tela de envio (`enviarHref`) e as
+ * seções na ordem da documentação. Com `erro` (SharePoint fora do ar), um
+ * aviso e "Tentar de novo" no lugar das seções.
  */
 export function TelaDaLoja({
   loja,
   lojas,
   secoes,
+  enviarHref,
   erro = false,
 }: {
   loja: { id: string; nome: string };
   lojas: OpcaoDeLoja[];
   secoes: Secao[];
+  enviarHref: string;
   erro?: boolean;
 }) {
   return (
@@ -42,7 +48,15 @@ export function TelaDaLoja({
                 <SeletorDeLoja lojas={lojas} atual={loja.id} />
               </div>
             </div>
-            <BotaoEnviar />
+            <Link
+              href={enviarHref}
+              className={buttonStyles({
+                className: "shrink-0 self-start md:self-auto",
+              })}
+            >
+              <Upload aria-hidden="true" className="size-5" />
+              Enviar fotos e vídeos
+            </Link>
           </div>
         </div>
 

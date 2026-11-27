@@ -29,10 +29,14 @@ describe("TelaDaLoja", () => {
         loja={loja}
         lojas={[{ ...loja, href: "/a" }]}
         secoes={secoes}
+        enviarHref="/enviar"
       />,
     );
     expect(html).toMatch(
       /<h1[^>]*>Drogaria Jumalti\u00a0- Caxias do Sul<\/h1>/,
+    );
+    expect(html).toMatch(
+      /<a[^>]*href="\/enviar"[^>]*>[\s\S]*?Enviar fotos e v\u00eddeos<\/a>/,
     );
     const relatorios = html.indexOf(">Relatórios<");
     const estudo = html.indexOf(">Estudo de mercado<");
@@ -53,6 +57,7 @@ describe("TelaDaLoja", () => {
           { id: "geral", nome: "Farmácia Geral", href: "/b" },
         ]}
         secoes={secoes}
+        enviarHref="/enviar"
       />,
     );
     expect(html).toContain("<details");
@@ -60,7 +65,13 @@ describe("TelaDaLoja", () => {
 
   test("com erro: o aviso e o botão, sem as seções", () => {
     const html = renderizar(
-      <TelaDaLoja loja={loja} lojas={[]} secoes={secoes} erro />,
+      <TelaDaLoja
+        loja={loja}
+        lojas={[]}
+        secoes={secoes}
+        enviarHref="/enviar"
+        erro
+      />,
     );
     expect(html).toContain(
       "Não deu para carregar o material agora. Tente de novo em alguns minutos.",
