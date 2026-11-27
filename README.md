@@ -41,6 +41,8 @@ Depois de entrar, o associado vê a tela da loja (`src/components/loja`): os rel
 
 O botão "Enviar fotos e vídeos" leva à tela de envio (`src/components/envio`). Nela o associado escolhe a loja e se o material é de antes ou de depois, escolhe os arquivos e acompanha uma barra por arquivo. Por enquanto, o envio é simulado; o envio de verdade para o SharePoint é a segunda parte do card [#20](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/20).
 
+O download em .zip (card [#17](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/17)) tem a parte do servidor pronta em `GET /arquivos/lojas/[lojaId]/zip`, com `?secao=` para baixar só uma seção. O zip é gerado em streaming, sem compressão, e a rota responde 413 acima de 500 MB, acima de 5.000 arquivos ou quando algum arquivo não informa o tamanho. A rota responde 503 até os cards #4 (SharePoint) e #10 (login) ligarem as dependências em `src/lib/arquivos/dependencias.ts`. Veja [docs/cards/17-baixar-tudo-zip.md](docs/cards/17-baixar-tudo-zip.md).
+
 Para ver as telas de entrada, a tela da loja e a de envio em cada estado, e o catálogo de componentes, rode `npm run dev` e abra `/previa`. A prévia só existe no ambiente de desenvolvimento.
 
 ## Como trabalhar neste repositório

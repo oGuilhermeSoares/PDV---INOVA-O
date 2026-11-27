@@ -431,6 +431,7 @@ Os cards foram escritos antes do retorno da Camila. Ainda falta aplicar no quadr
 - **#11:** o texto fala em "substituir o zip". Passa a ser "mostrar relatórios, estudo, fotos e vídeos". Também entra a seção **Relatórios** para os arquivos soltos na pasta.
 - **#14:** o aviso substitui o e-mail com **o PDF da assessoria e a pasta do estudo**, e não um zip.
 - **#17:** rever a prioridade, já que hoje ninguém recebe um zip com tudo.
+- **#17, parte do servidor (pronta):** a rota `GET /arquivos/lojas/[lojaId]/zip` gera o .zip da loja inteira ou de uma seção (`?secao=`), em streaming e sem compressão, com teto de 500 MB somando os arquivos (acima disso, com mais de 5.000 arquivos ou com arquivo sem tamanho informado, a rota responde 413). O teto existe por causa do tempo máximo da função na Vercel (300 s no Hobby, até 800 s no Pro) e deve ser calibrado depois de medir. Ela só funciona de verdade depois dos cards #4 e #10. Detalhes em [docs/cards/17-baixar-tudo-zip.md](cards/17-baixar-tudo-zip.md).
 - **Card novo: "Associado envia fotos e vídeos pelo portal"** (Alta, Grande). Inclui a tela de envio, a sessão de envio do Graph direto do navegador, o progresso por arquivo, os tipos e o tamanho permitidos, o tratamento de nomes repetidos e o registro em `EnvioAssociado`. Antes de começar, vale um teste rápido para confirmar que o navegador consegue enviar direto para o link do SharePoint.
 - **Card novo: "Avisar a equipe quando o associado enviar fotos e vídeos"** (Alta, Pequeno). Um aviso único por envio.
 
