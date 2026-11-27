@@ -11,8 +11,23 @@ export const JUMALTI = {
 };
 export const FARMACIA_GERAL = { id: "farmacia-geral", nome: "Farmácia Geral" };
 
-function arquivos(nomes: string[], atualizadoEm: string): ArquivoDaLoja[] {
-  return nomes.map((nome) => ({ id: nome, nome, atualizadoEm }));
+/**
+ * O "Baixar tudo" da prévia aponta para a rota de .zip do portal: a loja
+ * inteira sem `secaoId`; uma seção com ele.
+ */
+export function zipDaPrevia(lojaId: string) {
+  return (secaoId?: string) => {
+    const base = `/arquivos/lojas/${encodeURIComponent(lojaId)}/zip`;
+    return secaoId ? `${base}?secao=${encodeURIComponent(secaoId)}` : base;
+  };
+}
+
+function arquivos(
+  nomes: string[],
+  atualizadoEm: string,
+  tamanho = 2_000_000,
+): ArquivoDaLoja[] {
+  return nomes.map((nome) => ({ id: nome, nome, atualizadoEm, tamanho }));
 }
 
 /** 15 fotos do WhatsApp de 10/08, a partir das 09:41:58 da documentação. */
@@ -36,7 +51,10 @@ const BRICK_DA_FARMACIA_GERAL = [
   "BRICK 2004 - PRODUTOS FARM GERAL - MAT04_2026.xlsx",
 ];
 
-function pastasDaJumalti(semFotosDeDepois: boolean): PastaDaLoja[] {
+function pastasDaJumalti(
+  semFotosDeDepois: boolean,
+  videoGrande: boolean,
+): PastaDaLoja[] {
   return [
     {
       nome: "",
@@ -59,10 +77,15 @@ function pastasDaJumalti(semFotosDeDepois: boolean): PastaDaLoja[] {
     },
     {
       nome: "Fotos antes",
-      arquivos: arquivos(
-        ["Vídeo.mp4", ...fotosDoWhatsApp()],
-        "2026-08-10T09:44:00-03:00",
-      ),
+      arquivos: [
+        ...arquivos(
+          ["Vídeo.mp4"],
+          "2026-08-10T09:44:00-03:00",
+          // 600 MB passa do teto de 500 MB do .zip.
+          videoGrande ? 600 * 1024 * 1024 : undefined,
+        ),
+        ...arquivos(fotosDoWhatsApp(), "2026-08-10T09:44:00-03:00"),
+      ],
     },
     {
       nome: "Fotos Depois",
@@ -76,8 +99,11 @@ function pastasDaJumalti(semFotosDeDepois: boolean): PastaDaLoja[] {
   ];
 }
 
-export function secoesDaJumalti({ semFotosDeDepois = false } = {}) {
-  return montarSecoes(pastasDaJumalti(semFotosDeDepois));
+export function secoesDaJumalti({
+  semFotosDeDepois = false,
+  videoGrande = false,
+} = {}) {
+  return montarSecoes(pastasDaJumalti(semFotosDeDepois, videoGrande));
 }
 
 // A tela de envio: nomes como o celular gera (iPhone e WhatsApp), só na
@@ -117,6 +143,16 @@ export function filaDeExemplo(
       ? { ...base, situacao: pedida }
       : { ...base, situacao: "enviando", progresso: pedida.progresso };
   });
+}
+
+/** Uma loja recém-liberada: todas as seções vazias, sem "Baixar tudo". */
+export function secoesVazias() {
+  return montarSecoes([
+    { nome: "", arquivos: [] },
+    { nome: "Estudos", arquivos: [] },
+    { nome: "Fotos antes", arquivos: [] },
+    { nome: "Fotos Depois", arquivos: [] },
+  ]);
 }
 
 /** A segunda loja do mesmo associado: só o estudo, o resto ainda vazio. */

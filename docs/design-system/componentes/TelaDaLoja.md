@@ -13,6 +13,7 @@ A tela que o associado vê depois de entrar: o material da loja, numa rolagem s�
   secoes={montarSecoes(pastas)}
   enviarHref="/…" // a tela de envio desta loja
   erro={false} // true quando o SharePoint não respondeu
+  zipHref={(secaoId) => "…"} // opcional: liga os botões "Baixar tudo"
 />
 ```
 
@@ -30,6 +31,14 @@ O nome da loja passa por `nomeDaLoja` no `h1` e no seletor. As pastas seguem "Lo
 Com `erro`, as seções saem e entram um [Aviso](Aviso.md) de erro ("Não deu para carregar o material agora. Tente de novo em alguns minutos.") e o botão "Tentar de novo", que pede a página de novo ao servidor.
 
 "Enviar fotos e vídeos" é um link com cara de botão principal para a [tela de envio](TelaDeEnvio.md) (`enviarHref`).
+
+### Baixar tudo (`zipHref`)
+
+`zipHref?: (secaoId?: string) => string` devolve o endereço do .zip (card #17, rota `GET /arquivos/lojas/[lojaId]/zip`). Sem ele, nenhum botão "Baixar tudo" aparece.
+
+- **Na faixa:** o botão secundário "Baixar tudo" usa `zipHref()`, a loja inteira. Some com `erro` ou quando todas as seções estão vazias.
+- **Em cada seção com arquivos:** a tela passa `zipHref(secao.id)` à [SecaoDaLoja](#secaodaloja), que mostra o "Baixar tudo" da seção.
+- **Grande demais:** a regra `cabeNoZip` (`src/lib/arquivos/limite-do-zip.ts`) é a mesma do servidor. Se a loja (ou a seção) passa de 500 MB, tem mais de 5.000 arquivos ou tem arquivo sem `tamanho`, o botão não aparece e entra o texto "Grande demais para um .zip. Baixe os arquivos um por um.". Por isso os arquivos que a tela recebe precisam trazer `tamanho`.
 
 ## Ordem das seções
 
@@ -63,6 +72,7 @@ O cartão de uma seção. O título é `h2` (`font-titulo`, tamanho `secao`), ao
 
 - **Documentos:** uma lista de [ItemDeArquivo](#itemdearquivo).
 - **Fotos:** a [GradeDeFotos](#gradedefotos), passada em `children`.
+- **`zipHref?: string`:** com ele e ao menos um arquivo, o cabeçalho ganha o botão "Baixar tudo" (secundário, com o ícone `Download`), que baixa só esta seção em .zip. Se a seção não cabe num zip, o botão dá lugar ao aviso "Grande demais para um .zip. Baixe os arquivos um por um.". O nome acessível cita a seção ("Baixar tudo de Estudo de mercado em .zip").
 - **Vazia:** um [EmptyState](EmptyState.md) com `as="h3"` e o texto da seção, que diz o que vai aparecer ali ("O relatório da assessoria aparece aqui depois da visita da equipe.").
 
 ## ItemDeArquivo
@@ -108,4 +118,6 @@ Em `/previa`, no grupo "Tela da loja", com os arquivos do caso documentado (a Dr
 - `loja`: uma loja só, sem seletor;
 - `loja-varias-lojas` e `loja-farmacia-geral`: o mesmo associado com duas lojas; o seletor troca entre as duas;
 - `loja-secao-vazia`: sem fotos de depois;
+- `loja-grande-demais`: um vídeo de 600 MB em "Fotos antes"; a faixa e essa seção mostram o aviso no lugar do botão;
+- `loja-vazia`: nenhum arquivo em nenhuma seção; os botões "Baixar tudo" não aparecem.
 - `loja-erro`: o SharePoint fora do ar.

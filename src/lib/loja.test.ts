@@ -4,6 +4,7 @@ import {
   acaoDoArquivo,
   formatarData,
   indiceVizinho,
+  formatoDeIdDeSecaoValido,
   montarSecoes,
   nomeDaLoja,
   posicao,
@@ -104,5 +105,70 @@ describe("nomeDaLoja", () => {
 
   test("sem traço, o nome fica igual", () => {
     expect(nomeDaLoja("Farmácia Geral")).toBe("Farmácia Geral");
+  });
+});
+
+describe("nome da seção no zip", () => {
+  test("seções conhecidas têm nome curto e as outras usam o título da pasta", () => {
+    const secoes = montarSecoes(
+      ["", "Estudos", "Fotos antes", "Fotos depois", " Outra pasta "].map(
+        (nome) => ({ nome, arquivos: [] }),
+      ),
+    );
+
+    expect(secoes.map((s) => s.nomeNoZip)).toEqual([
+      "Relatórios",
+      "Estudo de mercado",
+      "Fotos antes",
+      "Fotos depois",
+      "Outra pasta",
+    ]);
+  });
+
+  test("o tamanho do arquivo passa pela seção", () => {
+    const [secao] = montarSecoes([
+      {
+        nome: "",
+        arquivos: [{ id: "a", nome: "a.pdf", atualizadoEm: "x", tamanho: 10 }],
+      },
+    ]);
+
+    expect(secao.arquivos[0].tamanho).toBe(10);
+  });
+});
+
+describe("formatoDeIdDeSecaoValido", () => {
+  test("aceita os ids conhecidos, pasta-* e o id da pasta escondida", () => {
+    for (const id of [
+      "relatorios",
+      "estudo",
+      "antes",
+      "depois",
+      "pasta-x",
+      "interno",
+    ]) {
+      expect(formatoDeIdDeSecaoValido(id), id).toBe(true);
+    }
+  });
+
+  test("aceita o id gerado para um nome de pasta de 120 caracteres", () => {
+    const [secao] = montarSecoes([
+      { nome: `Pasta ${"x".repeat(114)}`, arquivos: [] },
+    ]);
+
+    expect(formatoDeIdDeSecaoValido(secao.id)).toBe(true);
+  });
+
+  test("recusa formato estranho ou grande demais", () => {
+    for (const id of [
+      "",
+      "Depois",
+      "../x",
+      "pasta-",
+      "outro",
+      `pasta-${"a".repeat(300)}`,
+    ]) {
+      expect(formatoDeIdDeSecaoValido(id), id).toBe(false);
+    }
   });
 });

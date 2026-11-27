@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { TelaDaLoja } from "@/components/loja/TelaDaLoja";
+import { LIMITE_DO_ZIP_BYTES } from "@/lib/arquivos/limite-do-zip";
 import { montarSecoes, type ArquivoDaLoja } from "@/lib/loja";
 import { renderizar } from "@/testes/renderizar";
 
@@ -13,6 +14,7 @@ const arquivo = (nome: string): ArquivoDaLoja => ({
   id: nome,
   nome,
   atualizadoEm: "2026-10-28T12:00:00-03:00",
+  tamanho: 1_000_000,
 });
 
 const loja = { id: "jumalti", nome: "Drogaria Jumalti - Caxias do Sul" };
@@ -78,5 +80,88 @@ describe("TelaDaLoja", () => {
     );
     expect(html).toContain("Tentar de novo");
     expect(html).not.toContain(">Relatórios<");
+  });
+
+  const zipHref = (secaoId?: string) =>
+    `/zip${secaoId ? `?secao=${secaoId}` : ""}`;
+
+  test("com zipHref: Baixar tudo da loja e de cada seção com arquivos", () => {
+    const html = renderizar(
+      <TelaDaLoja
+        loja={loja}
+        lojas={[]}
+        secoes={secoes}
+        enviarHref="/enviar"
+        zipHref={zipHref}
+      />,
+    );
+    expect(html).toMatch(
+      /<a[^>]*href="\/zip"[^>]*aria-label="Baixar tudo de Drogaria Jumalti - Caxias do Sul em \.zip"/,
+    );
+    expect(html).toContain('href="/zip?secao=relatorios"');
+    expect(html).toContain('href="/zip?secao=estudo"');
+    expect(html).toContain('href="/zip?secao=antes"');
+    // "Fotos depois" está vazia: sem botão.
+    expect(html).not.toContain('href="/zip?secao=depois"');
+  });
+
+  test("loja grande demais: a faixa e a seção grande trocam o botão pelo aviso", () => {
+    const grandes = montarSecoes([
+      {
+        nome: "Fotos antes",
+        arquivos: [{ ...arquivo("Vídeo.mp4"), tamanho: LIMITE_DO_ZIP_BYTES }],
+      },
+      { nome: "Estudos", arquivos: [{ ...arquivo("BRICK.pdf"), tamanho: 10 }] },
+    ]);
+    const html = renderizar(
+      <TelaDaLoja
+        loja={loja}
+        lojas={[]}
+        secoes={grandes}
+        enviarHref="/e"
+        zipHref={zipHref}
+      />,
+    );
+    // A loja inteira passa do teto: sem o botão da faixa, só o aviso.
+    expect(html).not.toMatch(/href="\/zip"/);
+    expect(html).toContain("Grande demais para um .zip");
+    // A seção pequena ainda baixa; a grande não passa do teto sozinha.
+    expect(html).toContain('href="/zip?secao=estudo"');
+    expect(html).toContain('href="/zip?secao=antes"');
+  });
+
+  test("sem zipHref, nenhum Baixar tudo", () => {
+    const html = renderizar(
+      <TelaDaLoja loja={loja} lojas={[]} secoes={secoes} enviarHref="/e" />,
+    );
+    expect(html).not.toContain("Baixar tudo");
+  });
+
+  test("com erro ou tudo vazio, a faixa não tem Baixar tudo", () => {
+    const comErro = renderizar(
+      <TelaDaLoja
+        loja={loja}
+        lojas={[]}
+        secoes={secoes}
+        enviarHref="/e"
+        zipHref={zipHref}
+        erro
+      />,
+    );
+    expect(comErro).not.toContain("Baixar tudo");
+    const vazias = montarSecoes([
+      { nome: "", arquivos: [] },
+      { nome: "Fotos antes", arquivos: [] },
+    ]);
+    const semNada = renderizar(
+      <TelaDaLoja
+        loja={loja}
+        lojas={[]}
+        secoes={vazias}
+        enviarHref="/e"
+        zipHref={zipHref}
+      />,
+    );
+    expect(semNada).not.toContain("Baixar tudo");
   });
 });

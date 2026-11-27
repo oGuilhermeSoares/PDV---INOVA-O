@@ -16,6 +16,8 @@ import {
   filaDeExemplo,
   secoesDaFarmaciaGeral,
   secoesDaJumalti,
+  secoesVazias,
+  zipDaPrevia,
 } from "./dados-de-exemplo";
 import { EnvioDaPrevia } from "./EnvioDaPrevia";
 
@@ -156,6 +158,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         lojas={UMA_LOJA}
         secoes={secoesDaJumalti()}
         enviarHref="/previa/envio"
+        zipHref={zipDaPrevia(JUMALTI.id)}
       />
     ),
   },
@@ -168,6 +171,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         lojas={DUAS_LOJAS}
         secoes={secoesDaJumalti()}
         enviarHref="/previa/envio-varias-lojas"
+        zipHref={zipDaPrevia(JUMALTI.id)}
       />
     ),
   },
@@ -180,6 +184,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         lojas={DUAS_LOJAS}
         secoes={secoesDaFarmaciaGeral()}
         enviarHref="/previa/envio-varias-lojas"
+        zipHref={zipDaPrevia(FARMACIA_GERAL.id)}
       />
     ),
   },
@@ -192,6 +197,33 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         lojas={[{ ...JUMALTI, href: "/previa/loja-secao-vazia" }]}
         secoes={secoesDaJumalti({ semFotosDeDepois: true })}
         enviarHref="/previa/envio"
+        zipHref={zipDaPrevia(JUMALTI.id)}
+      />
+    ),
+  },
+  "loja-grande-demais": {
+    titulo: "Fotos e vídeos grandes demais para um .zip",
+    grupo: "Loja",
+    tela: (
+      <TelaDaLoja
+        loja={JUMALTI}
+        lojas={[{ ...JUMALTI, href: "/previa/loja-grande-demais" }]}
+        secoes={secoesDaJumalti({ videoGrande: true })}
+        enviarHref="/previa/envio"
+        zipHref={zipDaPrevia(JUMALTI.id)}
+      />
+    ),
+  },
+  "loja-vazia": {
+    titulo: "Loja sem nenhum arquivo ainda",
+    grupo: "Loja",
+    tela: (
+      <TelaDaLoja
+        loja={JUMALTI}
+        lojas={[{ ...JUMALTI, href: "/previa/loja-vazia" }]}
+        secoes={secoesVazias()}
+        enviarHref="/previa/envio"
+        zipHref={zipDaPrevia(JUMALTI.id)}
       />
     ),
   },
@@ -204,6 +236,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         lojas={[{ ...JUMALTI, href: "/previa/loja-erro" }]}
         secoes={[]}
         enviarHref="/previa/envio"
+        zipHref={zipDaPrevia(JUMALTI.id)}
         erro
       />
     ),
