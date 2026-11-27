@@ -39,7 +39,9 @@ A entrada do associado (`/entrar`) é uma página de apresentação, no estilo d
 
 Depois de entrar, o associado vê a tela da loja (`src/components/loja`): os relatórios, o estudo de mercado e as fotos e vídeos de antes e depois. Ela é tela de trabalho e segue o design system do portal; o estilo do clinia fica só na entrada.
 
-Para ver as telas de entrada e a tela da loja em cada estado, e o catálogo de componentes, rode `npm run dev` e abra `/previa`. A prévia só existe no ambiente de desenvolvimento.
+O botão "Enviar fotos e vídeos" leva à tela de envio (`src/components/envio`). Nela o associado escolhe a loja e se o material é de antes ou de depois, escolhe os arquivos e acompanha uma barra por arquivo. Por enquanto, o envio é simulado; o envio de verdade para o SharePoint é a segunda parte do card [#20](https://github.com/oGuilhermeSoares/PDV---INOVA-O/issues/20).
+
+Para ver as telas de entrada, a tela da loja e a de envio em cada estado, e o catálogo de componentes, rode `npm run dev` e abra `/previa`. A prévia só existe no ambiente de desenvolvimento.
 
 ## Como trabalhar neste repositório
 

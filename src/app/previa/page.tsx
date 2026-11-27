@@ -15,6 +15,7 @@ export const metadata: Metadata = { title: "Prévia" };
 const GRUPOS = [
   { grupo: "Associado", titulo: "Entrada do associado" },
   { grupo: "Loja", titulo: "Tela da loja" },
+  { grupo: "Envio", titulo: "Envio de fotos e vídeos" },
   { grupo: "Equipe", titulo: "Entrada da equipe" },
 ] as const;
 

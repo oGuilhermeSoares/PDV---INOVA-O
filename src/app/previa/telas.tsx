@@ -6,15 +6,23 @@ import { FormularioCodigo } from "@/components/entrada/FormularioCodigo";
 import { TelaDaEquipe, TelaDoAssociado } from "@/components/entrada/Telas";
 import { TelaDaLoja } from "@/components/loja/TelaDaLoja";
 import { MENSAGENS, type RespostaDaEntrada } from "@/lib/entrada";
+import { ERROS, type EstadoInicialDoEnvio } from "@/lib/envio";
 
 import {
+  ESCOLHIDOS_DE_EXEMPLO,
   FARMACIA_GERAL,
   JUMALTI,
+  LEVA_DE_EXEMPLO,
+  filaDeExemplo,
   secoesDaFarmaciaGeral,
   secoesDaJumalti,
 } from "./dados-de-exemplo";
+import { EnvioDaPrevia } from "./EnvioDaPrevia";
 
 const EMAIL = "jo***@gmail.com";
+
+/** A loja única da prévia; "Sua loja" e "Ver na tela da loja" voltam para ela. */
+const UMA_LOJA = [{ ...JUMALTI, href: "/previa/loja" }];
 
 /** O seletor da prévia troca entre as duas telas do associado com duas lojas. */
 const DUAS_LOJAS = [
@@ -24,7 +32,7 @@ const DUAS_LOJAS = [
 
 type ItemDaPrevia = {
   titulo: string;
-  grupo: "Associado" | "Loja" | "Equipe";
+  grupo: "Associado" | "Loja" | "Envio" | "Equipe";
   /** A página inteira, já no estado. */
   tela: ReactNode;
 };
@@ -54,6 +62,16 @@ function codigo({
         estadoInicial={estadoInicial}
       />
     </TelaDoAssociado>
+  );
+}
+
+function envio(estadoInicial?: EstadoInicialDoEnvio, lojas = UMA_LOJA) {
+  return (
+    <EnvioDaPrevia
+      lojas={lojas}
+      lojaId={JUMALTI.id}
+      estadoInicial={estadoInicial}
+    />
   );
 }
 
@@ -135,8 +153,9 @@ export const TELAS: Record<string, ItemDaPrevia> = {
     tela: (
       <TelaDaLoja
         loja={JUMALTI}
-        lojas={[{ ...JUMALTI, href: "/previa/loja" }]}
+        lojas={UMA_LOJA}
         secoes={secoesDaJumalti()}
+        enviarHref="/previa/envio"
       />
     ),
   },
@@ -148,6 +167,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         loja={JUMALTI}
         lojas={DUAS_LOJAS}
         secoes={secoesDaJumalti()}
+        enviarHref="/previa/envio-varias-lojas"
       />
     ),
   },
@@ -159,6 +179,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         loja={FARMACIA_GERAL}
         lojas={DUAS_LOJAS}
         secoes={secoesDaFarmaciaGeral()}
+        enviarHref="/previa/envio-varias-lojas"
       />
     ),
   },
@@ -170,6 +191,7 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         loja={JUMALTI}
         lojas={[{ ...JUMALTI, href: "/previa/loja-secao-vazia" }]}
         secoes={secoesDaJumalti({ semFotosDeDepois: true })}
+        enviarHref="/previa/envio"
       />
     ),
   },
@@ -181,9 +203,60 @@ export const TELAS: Record<string, ItemDaPrevia> = {
         loja={JUMALTI}
         lojas={[{ ...JUMALTI, href: "/previa/loja-erro" }]}
         secoes={[]}
+        enviarHref="/previa/envio"
         erro
       />
     ),
+  },
+  envio: { titulo: "Envio, com uma loja", grupo: "Envio", tela: envio() },
+  "envio-varias-lojas": {
+    titulo: "Envio, com duas lojas",
+    grupo: "Envio",
+    tela: envio(undefined, DUAS_LOJAS),
+  },
+  "envio-escolhendo": {
+    titulo: "Arquivos escolhidos, dois recusados",
+    grupo: "Envio",
+    tela: envio({
+      momento: "antes",
+      fila: filaDeExemplo(ESCOLHIDOS_DE_EXEMPLO, () => "pronto"),
+    }),
+  },
+  "envio-faltou-escolher": {
+    titulo: "Faltou escolher antes ou depois",
+    grupo: "Envio",
+    tela: envio({
+      fila: filaDeExemplo(ESCOLHIDOS_DE_EXEMPLO, () => "pronto"),
+      erros: { momento: ERROS.momento },
+    }),
+  },
+  "envio-enviando": {
+    titulo: "Enviando",
+    grupo: "Envio",
+    tela: envio({
+      momento: "antes",
+      fila: filaDeExemplo(LEVA_DE_EXEMPLO, (i) =>
+        i < 2 ? "enviado" : i === 2 ? { progresso: 0.64 } : "pronto",
+      ),
+    }),
+  },
+  "envio-com-falha": {
+    titulo: "Um arquivo não foi",
+    grupo: "Envio",
+    tela: envio({
+      momento: "antes",
+      fila: filaDeExemplo(LEVA_DE_EXEMPLO, (i) =>
+        i === LEVA_DE_EXEMPLO.length - 1 ? "falhou" : "enviado",
+      ),
+    }),
+  },
+  "envio-concluido": {
+    titulo: "Envio concluído",
+    grupo: "Envio",
+    tela: envio({
+      momento: "antes",
+      fila: filaDeExemplo(LEVA_DE_EXEMPLO, () => "enviado"),
+    }),
   },
   equipe: { titulo: "Equipe", grupo: "Equipe", tela: equipe() },
   "equipe-nao-ligada": {

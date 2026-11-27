@@ -1,3 +1,4 @@
+import { motivoDaRecusa, type ArquivoNaFila } from "@/lib/envio";
 import { montarSecoes, type ArquivoDaLoja, type PastaDaLoja } from "@/lib/loja";
 
 // O caso documentado (documentação do projeto, seção 7): os nomes dos
@@ -77,6 +78,45 @@ function pastasDaJumalti(semFotosDeDepois: boolean): PastaDaLoja[] {
 
 export function secoesDaJumalti({ semFotosDeDepois = false } = {}) {
   return montarSecoes(pastasDaJumalti(semFotosDeDepois));
+}
+
+// A tela de envio: nomes como o celular gera (iPhone e WhatsApp), só na
+// prévia. Um vídeo passa de 1 GB e um PDF não é aceito.
+export const ESCOLHIDOS_DE_EXEMPLO = [
+  { nome: "IMG_2041.HEIC", tamanho: 4_200_000 },
+  { nome: "IMG_2042.HEIC", tamanho: 3_900_000 },
+  { nome: "WhatsApp Image 2026-11-26 at 10.12.03.jpeg", tamanho: 312_000 },
+  { nome: "VID_0007.MOV", tamanho: 1_300_000_000 },
+  { nome: "Planograma.pdf", tamanho: 820_000 },
+  { nome: "VID_0008.MOV", tamanho: 86_000_000 },
+];
+
+/** Uma leva inteira: 12 fotos e 1 vídeo. */
+export const LEVA_DE_EXEMPLO = [
+  ...Array.from({ length: 12 }, (_, i) => ({
+    nome: `IMG_${2041 + i}.HEIC`,
+    tamanho: 3_000_000 + i * 130_000,
+  })),
+  { nome: "VID_0008.MOV", tamanho: 86_000_000 },
+];
+
+export type SituacaoDoExemplo =
+  "pronto" | "enviado" | "falhou" | { progresso: number };
+
+/** A fila da tela de envio; os recusados saem da regra, seja qual for o pedido. */
+export function filaDeExemplo(
+  arquivos: { nome: string; tamanho: number }[],
+  situacao: (i: number) => SituacaoDoExemplo,
+): ArquivoNaFila[] {
+  return arquivos.map(({ nome, tamanho }, i) => {
+    const base = { id: nome, chave: nome, nome, tamanho };
+    const motivo = motivoDaRecusa(base);
+    if (motivo) return { ...base, situacao: "recusado", motivo };
+    const pedida = situacao(i);
+    return typeof pedida === "string"
+      ? { ...base, situacao: pedida }
+      : { ...base, situacao: "enviando", progresso: pedida.progresso };
+  });
 }
 
 /** A segunda loja do mesmo associado: só o estudo, o resto ainda vazio. */

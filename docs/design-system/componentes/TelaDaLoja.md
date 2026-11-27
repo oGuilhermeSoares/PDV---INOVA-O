@@ -11,6 +11,7 @@ A tela que o associado vê depois de entrar: o material da loja, numa rolagem s�
   loja={{ id, nome }}
   lojas={[{ id, nome, href }]} // todas as lojas do grupo, com a atual
   secoes={montarSecoes(pastas)}
+  enviarHref="/…" // a tela de envio desta loja
   erro={false} // true quando o SharePoint não respondeu
 />
 ```
@@ -28,7 +29,7 @@ O nome da loja passa por `nomeDaLoja` no `h1` e no seletor. As pastas seguem "Lo
 
 Com `erro`, as seções saem e entram um [Aviso](Aviso.md) de erro ("Não deu para carregar o material agora. Tente de novo em alguns minutos.") e o botão "Tentar de novo", que pede a página de novo ao servidor.
 
-"Enviar fotos e vídeos" ainda só mostra um aviso flutuante dizendo que o envio chega na próxima etapa. O card #20 troca pela tela de envio.
+"Enviar fotos e vídeos" é um link com cara de botão principal para a [tela de envio](TelaDeEnvio.md) (`enviarHref`).
 
 ## Ordem das seções
 
