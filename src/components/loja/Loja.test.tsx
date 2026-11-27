@@ -5,6 +5,7 @@ import { ItemDeArquivo } from "@/components/loja/ItemDeArquivo";
 import { SecaoDaLoja } from "@/components/loja/SecaoDaLoja";
 import { SeletorDeLoja } from "@/components/loja/SeletorDeLoja";
 import { Visualizador } from "@/components/loja/Visualizador";
+import { LIMITE_DO_ZIP_BYTES } from "@/lib/arquivos/limite-do-zip";
 import type { ArquivoDaLoja, SecaoDaLoja as Secao } from "@/lib/loja";
 import { renderizar } from "@/testes/renderizar";
 
@@ -13,6 +14,7 @@ const arquivo = (nome: string): ArquivoDaLoja => ({
   id: nome,
   nome,
   atualizadoEm: em,
+  tamanho: 1_000_000,
 });
 const fotos = (n: number) =>
   Array.from({ length: n }, (_, i) => arquivo(`Foto ${i + 1}.jpeg`));
@@ -96,6 +98,53 @@ describe("SecaoDaLoja", () => {
       <SecaoDaLoja secao={secao(["a", "b", "c", "d"].map(arquivo))} />,
     );
     expect(quatro).toContain("4 itens");
+  });
+
+  test("com zipHref e arquivos, mostra o Baixar tudo da seção", () => {
+    const html = renderizar(
+      <SecaoDaLoja
+        secao={secao([arquivo("a.pdf")])}
+        zipHref="/arquivos/lojas/jumalti/zip?secao=estudo"
+      />,
+    );
+    expect(html).toMatch(
+      /<a[^>]*href="\/arquivos\/lojas\/jumalti\/zip\?secao=estudo"[^>]*download=""[^>]*aria-label="Baixar tudo de Estudo de mercado em .zip"[^>]*>[\s\S]*?Baixar tudo<\/a>/,
+    );
+  });
+
+  test("grande demais para um zip: sem o link, com o aviso", () => {
+    const grande = {
+      ...arquivo("video.mp4"),
+      tamanho: LIMITE_DO_ZIP_BYTES + 1,
+    };
+    const html = renderizar(
+      <SecaoDaLoja secao={secao([grande])} zipHref="/zip?secao=estudo" />,
+    );
+    expect(html).not.toContain("Baixar tudo");
+    expect(html).not.toContain("/zip?secao=estudo");
+    expect(html).toContain(
+      "Grande demais para um .zip. Baixe os arquivos um por um.",
+    );
+  });
+
+  test("arquivo sem tamanho conhecido também não vira zip", () => {
+    const html = renderizar(
+      <SecaoDaLoja
+        secao={secao([{ ...arquivo("a.pdf"), tamanho: undefined }])}
+        zipHref="/zip"
+      />,
+    );
+    expect(html).not.toContain("Baixar tudo");
+    expect(html).toContain("Grande demais para um .zip");
+  });
+
+  test("sem zipHref ou sem arquivos, não tem Baixar tudo", () => {
+    expect(
+      renderizar(<SecaoDaLoja secao={secao([arquivo("a.pdf")])} />),
+    ).not.toContain("Baixar tudo");
+    expect(
+      renderizar(<SecaoDaLoja secao={secao([])} zipHref="/zip" />),
+    ).not.toContain("Baixar tudo");
   });
 });
 

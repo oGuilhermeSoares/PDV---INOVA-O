@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Upload } from "lucide-react";
+import { Download, Upload } from "lucide-react";
 
 import { Aviso } from "@/components/ui/Aviso";
 import { buttonStyles } from "@/components/ui/Button";
+import { AVISO_GRANDE_DEMAIS, cabeNoZip } from "@/lib/arquivos/limite-do-zip";
 import { nomeDaLoja, type SecaoDaLoja as Secao } from "@/lib/loja";
 
 import { BarraDaLoja } from "./BarraDaLoja";
@@ -17,20 +18,33 @@ import { SeletorDeLoja, type OpcaoDeLoja } from "./SeletorDeLoja";
  * loja (com duas ou mais), o link para a tela de envio (`enviarHref`) e as
  * seções na ordem da documentação. Com `erro` (SharePoint fora do ar), um
  * aviso e "Tentar de novo" no lugar das seções.
+ *
+ * Com `zipHref`, aparece "Baixar tudo": na faixa, a loja inteira
+ * (`zipHref()`); em cada seção com arquivos, só ela (`zipHref(secao.id)`). O
+ * da faixa some com `erro` ou com todas as seções vazias. Sem `zipHref`,
+ * nenhum aparece. Quando os arquivos não cabem num zip (`cabeNoZip`), o botão
+ * dá lugar a "Grande demais para um .zip. Baixe os arquivos um por um.".
  */
 export function TelaDaLoja({
   loja,
   lojas,
   secoes,
   enviarHref,
+  zipHref,
   erro = false,
 }: {
   loja: { id: string; nome: string };
   lojas: OpcaoDeLoja[];
   secoes: Secao[];
   enviarHref: string;
+  zipHref?: (secaoId?: string) => string;
   erro?: boolean;
 }) {
+  const todosOsArquivos = secoes.flatMap((secao) => secao.arquivos);
+  const temArquivos = todosOsArquivos.length > 0;
+  const cabeTudo = cabeNoZip(todosOsArquivos);
+  const nome = nomeDaLoja(loja.nome);
+
   return (
     <div className="flex min-h-dvh flex-col">
       <BarraDaLoja />
@@ -42,21 +56,34 @@ export function TelaDaLoja({
             <div className="min-w-0">
               <p className="text-apoio text-realce font-semibold">Sua loja</p>
               <h1 className="font-titulo text-pagina mt-1 font-semibold tracking-tight text-balance wrap-anywhere">
-                {nomeDaLoja(loja.nome)}
+                {nome}
               </h1>
               <div className="mt-1">
                 <SeletorDeLoja lojas={lojas} atual={loja.id} />
               </div>
             </div>
-            <Link
-              href={enviarHref}
-              className={buttonStyles({
-                className: "shrink-0 self-start md:self-auto",
-              })}
-            >
-              <Upload aria-hidden="true" className="size-5" />
-              Enviar fotos e vídeos
-            </Link>
+            <div className="flex shrink-0 flex-wrap gap-3">
+              <Link href={enviarHref} className={buttonStyles()}>
+                <Upload aria-hidden="true" className="size-5" />
+                Enviar fotos e vídeos
+              </Link>
+              {zipHref && !erro && temArquivos && cabeTudo && (
+                <a
+                  href={zipHref()}
+                  download=""
+                  aria-label={`Baixar tudo de ${nome} em .zip`}
+                  className={buttonStyles({ variant: "secondary" })}
+                >
+                  <Download aria-hidden="true" className="size-5" />
+                  Baixar tudo
+                </a>
+              )}
+              {zipHref && !erro && temArquivos && !cabeTudo && (
+                <p className="text-apoio max-w-64 self-center text-white">
+                  {AVISO_GRANDE_DEMAIS}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -72,7 +99,11 @@ export function TelaDaLoja({
           ) : (
             <div className="grid grid-cols-1 gap-6">
               {secoes.map((secao) => (
-                <SecaoDaLoja key={secao.id} secao={secao}>
+                <SecaoDaLoja
+                  key={secao.id}
+                  secao={secao}
+                  zipHref={zipHref?.(secao.id)}
+                >
                   {secao.tipo === "fotos" && (
                     <GradeDeFotos arquivos={secao.arquivos} />
                   )}
